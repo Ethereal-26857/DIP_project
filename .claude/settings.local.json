@@ -1,7 +1,26 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(where python *)",
+      "Bash(pip list *)",
+      "Bash(python -c \"import cv2; print\\('opencv:', cv2.__version__\\)\")",
+      "Bash(python -c \"import skimage; print\\('skimage:', skimage.__version__\\)\")",
+      "Bash(python -c \"import sklearn; print\\('sklearn:', sklearn.__version__\\)\")",
+      "Bash(pip install *)",
+      "Bash(conda env *)",
+      "Bash(python feature_extraction.py)",
+      "Bash(python feature_analysis.py)",
+      "Bash(dir /s /b D:\\\\coding\\\\DIP_project\\\\.vene)",
+      "Bash(dir /s /b D:\\\\coding\\\\.vene)",
+      "Bash(python -m venv .vene)",
+      "Bash(.vene/Scripts/python -m pip install --upgrade pip)",
+      "Bash(.vene/Scripts/pip install *)",
+      "Bash(.vene/Scripts/python -c \"import cv2; import numpy; import pandas; import skimage; import sklearn; import matplotlib; import seaborn; print\\('All OK'\\); print\\('cv2:', cv2.__version__\\); print\\('numpy:', numpy.__version__\\); print\\('pandas:', pandas.__version__\\); print\\('skimage:', skimage.__version__\\); print\\('sklearn:', sklearn.__version__\\)\")",
+      "Bash(.vene/Scripts/python feature_extraction.py)",
+      "Bash(.vene/Scripts/python feature_analysis.py)",
+      "Bash(xelatex -interaction=nonstopmode report_member2.tex)",
+      "Bash(pdflatex -interaction=nonstopmode report_member2.tex)"
     ]
   }
 }
