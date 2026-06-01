@@ -1,0 +1,669 @@
+% !TEX program = xelatex
+% 编译: xelatex experiment_report.tex (需安装 TeX Live / MiKTeX 及 ctex)
+\documentclass[12pt,a4paper]{ctexart}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{array}
+\usepackage{float}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+
+\title{\textbf{生物医学图像处理课程大作业}\\
+\large Project 2：皮肤病变图像深度学习分类实验报告\\
+\large 基于 ResNet18 与 MobileNetV2 的迁移学习}
+\author{（请填写：组长姓名、学号、组员及分工）}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+本实验针对 Project 2 皮肤病变三分类任务（mel、nv、vasc），在预处理后的
+\texttt{processed dataset} 上采用 ImageNet 预训练的 ResNet18 与 MobileNetV2 进行迁移学习。
+训练集进一步按病灶原图 ID 分组划分验证集，在独立测试集（120 张）上评估，
+并分别统计原图与增强图子集的表现。实验表明：MobileNetV2 在测试集整体准确率与
+Macro-F1 上优于 ResNet18（83.33\% vs.\ 79.17\%，Macro-F1 0.840 vs.\ 0.797）；
+在增强图子集（$n{=}91$）上 MobileNetV2 准确率为 79.1\%，高于 ResNet18（75.8\%）
+及传统随机森林（71.4\%）。与 \texttt{final\_project} 手工特征分类器相比，
+深度学习整体准确率提升约 10 个百分点（83.33\% vs.\ 73.33\%）。
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{实验背景与任务目标}
+%==============================================================================
+
+\subsection{课程任务说明}
+Project 2 要求从皮肤病变图像中提取特征并完成多类分类，并通过对\textbf{增强图像}
+的识别能力体现算法鲁棒性。数据集共 600 张图像：200 张原图与 400 张由数据增强
+（\texttt{*\_aug1}、\texttt{*\_aug2}）得到的增强图，类别为：
+\begin{itemize}
+  \item \textbf{mel}：黑色素瘤（Melanoma）
+  \item \textbf{nv}：痣（Nevus）
+  \item \textbf{vasc}：血管病变（Vascular lesion）
+\end{itemize}
+
+\subsection{本实验目标}
+\begin{enumerate}
+  \item 使用 \textbf{ResNet18} 与 \textbf{MobileNetV2} 进行迁移学习分类；
+  \item 完成训练集、验证集、测试集的划分与模型训练；
+  \item 对比深度模型在\textbf{原图}与\textbf{增强图}上的分类表现，分析鲁棒性。
+\end{enumerate}
+
+\textit{说明：课程第 15 周定量评测要求使用传统图像处理或简单机器学习方法；
+本报告所述深度学习结果为课堂展示与课程报告所用，与传统方法形成互补对比。}
+
+%==============================================================================
+\section{数据集与预处理}
+%==============================================================================
+
+\subsection{原始数据}
+原始数据位于 \texttt{Data\_Proj2/}，包含 \texttt{image/}、\texttt{mask/} 及
+\texttt{label.csv}（600 条记录）。
+
+\subsection{预处理流程}
+小组成员已完成统一预处理（见 \texttt{processed dataset/demo.ipynb}），主要步骤为：
+\begin{enumerate}
+  \item 尺寸归一化至 $256\times256$；
+  \item 基于形态学 Black-hat 的轻度\textbf{去毛发}（Telea 修复）；
+  \item LAB 色彩空间下对 L 通道做亮度归一化（范围约 30--220）。
+\end{enumerate}
+
+\subsection{划分方案}
+预处理输出保存在 \texttt{processed dataset/}：
+\begin{table}[H]
+  \centering
+  \caption{官方预处理划分（ stratify 分层抽样，random\_state=42）}
+  \label{tab:data_split}
+  \begin{tabular}{lrrrr}
+    \toprule
+    子集 & 样本数 & 原图 & 增强图 & 类别分布（nv/mel/vasc） \\
+    \midrule
+    训练（官方） & 480 & 171 & 309 & 240 / 168 / 72 \\
+    测试（官方） & 120 & 29  & 91  & 60 / 42 / 18 \\
+    合计         & 600 & 200 & 400 & 300 / 210 / 90 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+深度学习阶段在官方训练集（480 张）上，按\textbf{病灶原图编号}
+（如 \texttt{42\_aug2} $\rightarrow$ \texttt{42}）进行 \textbf{GroupShuffleSplit}，
+再划分出约 20\% 作为验证集，以避免同一病灶的原图与增强图同时出现在训练与验证中：
+\begin{table}[H]
+  \centering
+  \caption{深度学习训练/验证划分（VAL\_RATIO=0.2，SEED=42）}
+  \label{tab:dl_split}
+  \begin{tabular}{lrrr}
+    \toprule
+    子集 & 样本数 & 原图 & 增强图 \\
+    \midrule
+    训练（模型拟合） & 387 & 138 & 249 \\
+    验证（调参与早停） & 93  & 33  & 60  \\
+    测试（最终评估）   & 120 & 29  & 91  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+%==============================================================================
+\section{方法}
+%==============================================================================
+
+\subsection{迁移学习框架}
+\begin{itemize}
+  \item \textbf{骨干网络}：torchvision 提供的 ResNet18、MobileNetV2，权重为 ImageNet-1K 预训练；
+  \item \textbf{分类头}：将最后一层全连接替换为 3 类输出；
+  \item \textbf{输入}：$256\times256$ RGB，ImageNet 均值/方差归一化；
+  \item \textbf{损失函数}：交叉熵（CrossEntropyLoss）；
+  \item \textbf{优化器}：Adam（$lr=10^{-4}$，weight decay $10^{-4}$）；
+  \item \textbf{学习率调度}：验证准确率 plateau 时乘以 0.5（patience=3）；
+  \item \textbf{早停}：验证集准确率连续 8 个 epoch 无提升则停止。
+\end{itemize}
+
+\subsection{数据增强（仅训练阶段）}
+训练时对预处理图像施加在线增强：随机水平翻转、$\pm15^\circ$ 旋转、
+轻度 ColorJitter；验证与测试仅做 resize 与归一化。
+
+\subsection{评估指标}
+\begin{itemize}
+  \item \textbf{Accuracy}（准确率）
+  \item \textbf{Macro-F1}（宏平均 F1，兼顾类别不平衡）
+  \item \textbf{混淆矩阵}及每类 Precision / Recall / F1
+\end{itemize}
+
+按 \texttt{image\_id} 是否包含 \texttt{\_aug} 将样本划分为\textbf{原图子集}
+与\textbf{增强图子集}，分别统计上述指标。
+
+%==============================================================================
+\section{实验设置}
+%==============================================================================
+
+\begin{table}[H]
+  \centering
+  \caption{超参数与运行环境（\texttt{deep\_learning/config.py}）}
+  \label{tab:hyper}
+  \begin{tabular}{ll}
+    \toprule
+    项目 & 设置 \\
+    \midrule
+    批大小（batch size） & 16 \\
+    最大训练轮数 & 30 \\
+    验证集比例 & 0.2（按病灶分组） \\
+    随机种子 & 42 \\
+    实现框架 & PyTorch + torchvision \\
+    代码入口 & \texttt{py -m deep\_learning.main} \\
+    权重保存 & \texttt{outputs/checkpoints/\{backbone\}\_best.pt} \\
+    结果输出 & \texttt{outputs/results/} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+%==============================================================================
+\section{实验结果}
+%==============================================================================
+
+\subsection{总体性能对比}
+
+表~\ref{tab:main_results} 汇总两模型在验证集与测试集上的准确率与 Macro-F1
+（数据来源于 \texttt{outputs/results/model\_comparison.csv}）。
+
+\begin{table}[H]
+  \centering
+  \caption{ResNet18 与 MobileNetV2 分类性能对比}
+  \label{tab:main_results}
+  \begin{tabular}{llrrrr}
+    \toprule
+    模型 & 数据集 & 子集 & $n$ & Accuracy & Macro-F1 \\
+    \midrule
+    \multirow{6}{*}{ResNet18}
+      & val  & 全部   & 93  & 0.774 & 0.780 \\
+      & val  & 原图   & 33  & 0.788 & 0.792 \\
+      & val  & 增强图 & 60  & 0.767 & 0.774 \\
+      & test & 全部   & 120 & 0.792 & 0.797 \\
+      & test & 原图   & 29  & 0.897 & 0.899 \\
+      & test & 增强图 & 91  & 0.758 & 0.760 \\
+    \midrule
+    \multirow{6}{*}{MobileNetV2}
+      & val  & 全部   & 93  & 0.763 & 0.776 \\
+      & val  & 原图   & 33  & 0.667 & 0.665 \\
+      & val  & 增强图 & 60  & 0.817 & 0.833 \\
+      & test & 全部   & 120 & \textbf{0.833} & \textbf{0.840} \\
+      & test & 原图   & 29  & 0.966 & 0.971 \\
+      & test & 增强图 & 91  & \textbf{0.791} & \textbf{0.793} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{测试集：原图与增强图性能差距}
+
+\begin{table}[H]
+  \centering
+  \caption{测试集上原图 vs.\ 增强图的准确率差距（$\Delta$ = 原图 Acc $-$ 增强图 Acc）}
+  \label{tab:gap}
+  \begin{tabular}{lrrr}
+    \toprule
+    模型 & 原图 Acc & 增强图 Acc & $\Delta$ \\
+    \midrule
+    ResNet18     & 89.7\% & 75.8\% & +13.9 pp \\
+    MobileNetV2  & 96.6\% & 79.1\% & +17.5 pp \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+ResNet18 在测试原图上表现突出（89.7\%），增强图回落至 75.8\%（差距约 14 pp）。
+MobileNetV2 测试原图准确率达 96.6\%（$n{=}29$，样本量小，可能受划分泄漏影响偏乐观），
+增强图为 79.1\%，为两深度模型中\textbf{增强子集最高}；整体测试 Macro-F1 为 0.840，
+优于 ResNet18 的 0.797。
+
+\subsection{测试集分类报告（MobileNetV2，最佳模型）}
+
+\begin{table}[H]
+  \centering
+  \caption{MobileNetV2 测试集整体 per-class 指标}
+  \label{tab:mb_test_report}
+  \begin{tabular}{lrrrr}
+    \toprule
+    类别 & Precision & Recall & F1-score & Support \\
+    \midrule
+    mel  & 0.85 & 0.79 & 0.81 & 42 \\
+    nv   & 0.83 & 0.83 & 0.83 & 60 \\
+    vasc & 0.81 & 0.94 & 0.87 & 18 \\
+    \midrule
+    accuracy & \multicolumn{3}{r}{0.83} & 120 \\
+    macro avg & 0.83 & 0.85 & 0.84 & 120 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{ResNet18 测试集整体 per-class 指标}
+  \label{tab:rn_test_report}
+  \begin{tabular}{lrrrr}
+    \toprule
+    类别 & Precision & Recall & F1-score & Support \\
+    \midrule
+    mel  & 0.81 & 0.69 & 0.74 & 42 \\
+    nv   & 0.78 & 0.83 & 0.81 & 60 \\
+    vasc & 0.80 & 0.89 & 0.84 & 18 \\
+    \midrule
+    accuracy & \multicolumn{3}{r}{0.79} & 120 \\
+    macro avg & 0.80 & 0.80 & 0.80 & 120 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+ResNet18 对 \textbf{mel} 的召回率偏低（0.69），是拉低增强子集表现的主要因素之一；
+MobileNetV2 在三类上更为均衡，\textbf{vasc} 召回率达 0.94。
+
+\subsection{混淆矩阵}
+
+混淆矩阵行表示真实类别，列表示预测类别，顺序均为 mel / nv / vasc。
+
+\begin{table}[H]
+  \centering
+  \caption{MobileNetV2 测试集混淆矩阵（$n=120$）}
+  \label{tab:cm_mb_test}
+  \begin{tabular}{l|ccc}
+    \toprule
+    真实 $\backslash$ 预测 & mel & nv & vasc \\
+    \midrule
+    mel  & 33 & 9  & 0 \\
+    nv   & 6  & 50 & 4 \\
+    vasc & 0  & 1  & 17 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{ResNet18 测试集混淆矩阵（$n=120$）}
+  \label{tab:cm_rn_test}
+  \begin{tabular}{l|ccc}
+    \toprule
+    真实 $\backslash$ 预测 & mel & nv & vasc \\
+    \midrule
+    mel  & 29 & 12 & 1 \\
+    nv   & 7  & 50 & 3 \\
+    vasc & 0  & 2  & 16 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{MobileNetV2 测试集——增强图子集混淆矩阵（$n=91$）}
+  \label{tab:cm_mb_aug}
+  \begin{tabular}{l|ccc}
+    \toprule
+    真实 $\backslash$ 预测 & mel & nv & vasc \\
+    \midrule
+    mel  & 22 & 8  & 0 \\
+    nv   & 6  & 39 & 4 \\
+    vasc & 0  & 1  & 11 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{ResNet18 测试集——增强图子集混淆矩阵（$n=91$）}
+  \label{tab:cm_rn_aug}
+  \begin{tabular}{l|ccc}
+    \toprule
+    真实 $\backslash$ 预测 & mel & nv & vasc \\
+    \midrule
+    mel  & 19 & 10 & 1 \\
+    nv   & 7  & 39 & 3 \\
+    vasc & 0  & 1  & 11 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+主要误分类模式：mel 与 nv 之间的相互混淆（两模型均有 7--15 例量级）；
+ResNet18 将部分 mel 误判为 vasc（1 例），增强子集上 mel$\rightarrow$nv 误判更为突出。
+
+\subsection{训练曲线与错例可视化}
+
+图~\ref{fig:curve_rn}--\ref{fig:curve_mb} 为两模型训练/验证损失及准确率、Macro-F1 曲线；
+图~\ref{fig:errors_mb}--\ref{fig:errors_rn} 为测试集部分错例（真标签 $\rightarrow$ 预测标签）。
+由 \texttt{py -m deep\_learning.main --plot} 根据
+\texttt{*\_history.json} 与预测 CSV 生成，保存在
+\texttt{deep\_learning/outputs/figures/}。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{deep_learning/outputs/figures/resnet18_training_curves.png}
+  \caption{ResNet18 训练曲线（损失与准确率 / Macro-F1）}
+  \label{fig:curve_rn}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{deep_learning/outputs/figures/mobilenet_v2_training_curves.png}
+  \caption{MobileNetV2 训练曲线}
+  \label{fig:curve_mb}
+\end{figure}
+
+MobileNetV2 错例中 mel 误判为 nv 仍占多数；ResNet18 在增强样本上错例更多。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{deep_learning/outputs/figures/mobilenet_v2_test_misclassified.png}
+  \caption{MobileNetV2 测试集错例示意（优先展示 mel 相关误判）}
+  \label{fig:errors_mb}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{deep_learning/outputs/figures/resnet18_test_misclassified.png}
+  \caption{ResNet18 测试集错例示意}
+  \label{fig:errors_rn}
+\end{figure}
+
+\subsection{训练策略改进}
+
+后续训练默认启用：\textbf{类别加权交叉熵}（缓解 nv/mel/vasc 不平衡）、
+以验证集 \textbf{Macro-F1} 选取最佳 checkpoint（而非单纯准确率）。
+复现命令见附录；推理输出 \texttt{output\_\{backbone\}.csv} 可由
+\texttt{--predict} 生成。
+
+%==============================================================================
+\section{结果分析与讨论}
+%==============================================================================
+
+\subsection{模型对比}
+在独立测试集上，\textbf{MobileNetV2 整体优于 ResNet18}（准确率 83.33\% vs.\ 79.17\%，
+Macro-F1 0.840 vs.\ 0.797）。尽管 ResNet18 参数量更大，在本任务有限样本（600 张）
+及已预处理数据上，轻量级 MobileNetV2 配合迁移学习取得了更好泛化；在增强测试子集上
+亦以 79.1\% 高于 ResNet18 的 75.8\%。
+
+\subsection{原图与增强图鲁棒性}
+Project 2 强调对增强图像的识别鲁棒性。实验表明：
+\begin{itemize}
+  \item \textbf{ResNet18}：测试集原图准确率（89.7\%）高于增强图（75.8\%），差距约 14 pp，
+  对离线增强（旋转、翻转）泛化不足；
+  \item \textbf{MobileNetV2}：增强图准确率 79.1\%，为深度模型中最高；原图准确率达 96.6\%
+  （$n{=}29$），与原图--增强图差距约 17.5 pp，部分源于原图子集样本少及划分泄漏带来的乐观估计，
+  应以增强子集指标衡量鲁棒性。
+\end{itemize}
+
+验证集上 MobileNetV2 呈现“增强优于原图”的趋势，与测试集原图子集高准确率并存，
+与验证/测试原图样本量均较小（$n{=}33$ / $29$）有关，最终以增强子集与整体测试集为准。
+
+\subsection{类别不平衡}
+数据集中 nv 样本最多，vasc 最少。MobileNetV2 对 vasc 召回率达 0.94、F1 为 0.87；
+ResNet18 对 mel 召回为 0.69，临床意义下 melanoma 漏检风险相对更高，可结合
+代价敏感学习或重采样进一步优化。
+
+\subsection{局限性}
+\begin{enumerate}
+  \item 官方 train/test 按单张 \texttt{image\_id} 随机划分，不同增强版本可能分属训练与测试，
+  存在病灶级信息泄漏的可能；本实验仅在 train$\rightarrow$val 划分时按病灶分组缓解；
+  \item 测试集增强图占比高（91/120），评测结果更侧重增强分布；
+  \item 与传统方法的对比见第~\ref{sec:trad_vs_dl} 节；深度学习未复现成员4的全部
+  图像扰动实验，鲁棒性结论主要基于原图/增强图子集划分。
+\end{enumerate}
+
+%==============================================================================
+\section{传统方法 vs 深度学习对比分析}
+\label{sec:trad_vs_dl}
+%==============================================================================
+
+本节基于 \texttt{final\_project/} 中小组已完成的传统流水线，与
+\texttt{deep\_learning/} 实验结果进行\textbf{同数据集、同官方划分}
+（训练 480 / 测试 120，\texttt{random\_state=42}）的并列对比。
+传统方法数据来自 \texttt{results/model\_comparison.csv}、
+\texttt{results\_member4/augmentation\_consistency.csv} 与
+\texttt{results\_member4/group\_split\_summary.csv}；
+深度学习方法数据来自 \texttt{deep\_learning/outputs/results/model\_comparison.csv}。
+
+\subsection{传统方法流水线概述}
+
+传统方案由小组成员分模块完成（详见 \texttt{final\_project/README.md}）：
+\begin{enumerate}
+  \item \textbf{预处理}（成员1）：与深度学习共用同一套
+  \texttt{processed dataset}（$256\times256$、去毛发、亮度归一化）；
+  \item \textbf{特征工程}（成员2）：从 RGB 图像提取 127 维手工特征——
+  颜色矩（9 维）、RGB 直方图（96 维）、GLCM 纹理（12 维）、LBP 纹理（10 维），
+  经 \texttt{StandardScaler} 归一化（可选 PCA 降至 36 维，最终评测使用 127 维）；
+  \item \textbf{分类器}（成员3）：对 SVM（RBF）、随机森林（RF）、KNN 进行
+  \texttt{GridSearchCV}（5 折分层交叉验证），在测试集上报告 Accuracy 与 Macro-F1；
+  \item \textbf{鲁棒性扩展}（成员4）：分析增强图一致性、图像扰动及严格按病灶
+  编号分组划分下的性能波动。
+\end{enumerate}
+
+\subsection{总体性能对比}
+
+表~\ref{tab:trad_vs_dl_overall} 汇总各方法在官方测试集（$n=120$）上的整体指标。
+传统方法中 \textbf{随机森林（RF）} 准确率最高（73.33\%），与 SVM（72.50\%）Macro-F1
+相当（均为 0.736）；KNN 明显落后（66.67\%）。
+深度学习中 \textbf{MobileNetV2} 全面领先：准确率 83.33\%、Macro-F1 0.840，
+较最佳传统方法 RF 分别提升约 \textbf{10.0 pp} 与 \textbf{0.104}；
+ResNet18 亦优于全部传统模型（79.17\% / 0.797）。
+
+\begin{table}[H]
+  \centering
+  \caption{传统机器学习 vs.\ 深度学习：测试集整体性能（$n=120$）}
+  \label{tab:trad_vs_dl_overall}
+  \begin{tabular}{llrrl}
+    \toprule
+    范式 & 模型 & Accuracy & Macro-F1 & 备注 \\
+    \midrule
+    \multirow{3}{*}{传统（手工特征）}
+      & Random Forest & 0.733 & 0.736 & 最佳传统准确率 \\
+      & SVM (RBF)     & 0.725 & 0.736 & 少数类 vasc 召回略优 \\
+      & KNN           & 0.667 & 0.672 & $k{=}1$，曼哈顿距离 \\
+    \midrule
+    \multirow{2}{*}{深度学习（迁移学习）}
+      & MobileNetV2   & \textbf{0.833} & \textbf{0.840} & 本实验最佳 \\
+      & ResNet18      & 0.792 & 0.797 & 参数量更大 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{原图与增强图子集对比}
+
+Project 2 强调对增强图像的识别能力。测试集中含原图 29 张、增强图 91 张
+（\texttt{*\_aug1}、\texttt{*\_aug2}）。表~\ref{tab:trad_vs_dl_aug} 对比各方法在
+两类子集上的准确率及\textbf{原图--增强图差距} $\Delta$。
+
+\begin{table}[H]
+  \centering
+  \caption{原图 vs.\ 增强图测试准确率及差距 $\Delta$（pp = 百分点）}
+  \label{tab:trad_vs_dl_aug}
+  \begin{tabular}{lrrrr}
+    \toprule
+    模型 & 原图 Acc ($n{=}29$) & 增强图 Acc ($n{=}91$) & $\Delta$ & 说明 \\
+    \midrule
+    SVM (传统)           & 89.7\% & 67.0\% & +22.7 & 增强图表现最差 \\
+    Random Forest (传统) & 79.3\% & 71.4\% & +7.9  & 传统中最均衡 \\
+    KNN (传统)           & 75.9\% & 63.7\% & +12.2 & 对增强图敏感 \\
+  \midrule
+    ResNet18             & 89.7\% & 75.8\% & +13.9 & 原图高、增强回落明显 \\
+    MobileNetV2          & 96.6\% & 79.1\% & +17.5 & \textbf{增强子集最佳} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textit{注：传统方法增强子集准确率为 \texttt{augmentation\_consistency.csv} 中
+\texttt{\_aug1}（45 张）与 \texttt{\_aug2}（46 张）子集准确率的样本数加权平均。}
+
+主要发现如下：
+\begin{itemize}
+  \item \textbf{绝对性能}：MobileNetV2 在增强图子集（79.1\%）上较最佳传统 RF（71.4\%）
+  高出约 8 pp，亦高于 ResNet18（75.8\%）；
+  \item \textbf{泛化均衡性}：传统 RF 的原图--增强差距（7.9 pp）最小；深度模型原图
+  准确率普遍偏高，MobileNetV2 原图达 96.6\%（$n{=}29$），提示需结合严格病灶分组
+  评估，不宜单独依据原图子集判断鲁棒性；
+  \item \textbf{共同难点}：mel 与 nv 互混仍是主要误分类来源（见错例图）。
+\end{itemize}
+
+\subsection{各类别 per-class 表现}
+
+表~\ref{tab:trad_vs_dl_class} 对比最佳传统模型 RF 与最佳深度模型 MobileNetV2
+的测试集各类 F1。两者共同难点为 \textbf{mel $\leftrightarrow$ nv} 混淆；
+深度学习在三类上均优于传统方法，尤其对 mel（0.81 vs.\ 0.71）与 vasc（0.87 vs.\ 0.76）
+提升明显。深度 MobileNetV2 将 mel 召回提升至 0.79，有利于降低黑色素瘤漏检风险。
+
+\begin{table}[H]
+  \centering
+  \caption{测试集各类 F1-score：Random Forest（传统）vs.\ MobileNetV2（深度）}
+  \label{tab:trad_vs_dl_class}
+  \begin{tabular}{lrrr}
+    \toprule
+    类别 & RF (传统) & MobileNetV2 & $\Delta$ F1 \\
+    \midrule
+    mel  & 0.707 & 0.810 & +0.103 \\
+    nv   & 0.744 & 0.830 & +0.086 \\
+    vasc & 0.757 & 0.870 & +0.113 \\
+    \midrule
+    macro avg & 0.736 & 0.840 & +0.104 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{数据划分与评测可信度}
+
+成员4 指出：当前官方划分按单张 \texttt{image\_id} 随机分层，去除
+\texttt{\_aug1}/\texttt{\_aug2} 后缀后，训练集与测试集存在
+\textbf{98 个共同病灶编号}（共 200 个原图编号），即同一病灶的原图/增强图可能
+分属训练与测试，造成信息泄漏，使测试指标偏乐观。
+
+在\textbf{严格按病灶编号分组}（10 次随机，训练/测试病灶零重叠）下，
+传统方法 Macro-F1 均值显著下降（表~\ref{tab:strict_group}）。
+深度学习仅在 train$\rightarrow$val 阶段采用 GroupShuffleSplit 缓解泄漏，
+测试集仍使用官方划分，故与传统“官方划分”结果可直接对比，但双方均需在答辩中
+说明严格分组下的预期性能折损。
+
+\begin{table}[H]
+  \centering
+  \caption{严格病灶分组（10 次均值$\pm$标准差）下的 Macro-F1}
+  \label{tab:strict_group}
+  \begin{tabular}{lcc}
+    \toprule
+    模型 & Macro-F1 (mean$\pm$std) & 相对官方划分 RF（0.736） \\
+    \midrule
+    Random Forest (传统) & $0.578 \pm 0.035$ & $-0.158$ \\
+    SVM (传统)           & $0.515 \pm 0.050$ & $-0.221$ \\
+    KNN (传统)           & $0.490 \pm 0.067$ & $-0.246$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+此外，成员4 对同一测试集施加亮度、对比度、高斯噪声、模糊、旋转裁剪等扰动：
+传统 SVM 在亮度 $\times 0.8$ 时准确率降至 31.7\%，强噪声（$\sigma{=}16$）时降至 25\%；
+RF 相对稳定但仍出现 5--15 pp 量级的回落。深度学习流水线未系统复现上述扰动实验，
+但 MobileNetV2 在\textbf{课程定义的离线增强图}上保持 79.1\% 准确率，仍高于传统 RF（71.4\%）
+与 ResNet18（75.8\%）。
+
+\subsection{方法特性与适用场景}
+
+\begin{table}[H]
+  \centering
+  \caption{传统方法 vs.\ 深度学习：综合对比}
+  \label{tab:trad_vs_dl_summary}
+  \small
+  \begin{tabular}{p{2.2cm}p{5.2cm}p{5.2cm}}
+    \toprule
+    维度 & 传统（手工特征 + SVM/RF/KNN） & 深度学习（ResNet18 / MobileNetV2） \\
+    \midrule
+    特征表示 &
+    可解释的颜色/纹理统计量，127 维，依赖领域设计 &
+    ImageNet 预训练卷积自动表征，端到端微调 \\
+    训练成本 &
+    特征提取一次 + 网格搜索约 1--2 分钟 &
+    GPU 训练数十分钟，需调参（学习率、早停等） \\
+    官方划分性能 &
+    最佳 73.33\%（RF），满足课程第 15 周定量要求 &
+    最佳 83.33\%（MobileNetV2），适合课堂展示 \\
+    增强图鲁棒性 &
+    RF 增强子集 71.4\%，SVM 原图--增强差距大 &
+    MobileNetV2 增强 79.1\%，整体最优 \\
+    严格分组泛化 &
+    Macro-F1 约 0.49--0.58，波动较大 &
+    未在测试集做严格分组；val 已按病灶分组 \\
+    临床相关 &
+    mel 召回偏低（RF 0.69） &
+    mel 召回 0.79，vasc 召回 0.94 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{结论性认识}：在相同预处理与划分条件下，深度学习以更高上限完成三分类任务，
+MobileNetV2 为综合最优；传统 RF/SVM 实现简单、可解释、训练快，符合课程对传统
+方法的考核，但在有限样本皮肤镜任务上难以匹敌迁移学习。课程设计中的“传统 +
+深度”双轨互补：前者展示特征工程与经典分类器基线，后者展示表示学习与鲁棒性优势。
+后续可在严格病灶分组测试集上统一评测深度模型，并探索“手工特征 + CNN 嵌入”融合。
+
+%==============================================================================
+\section{结论}
+%==============================================================================
+
+本实验完成了基于 ResNet18 与 MobileNetV2 的皮肤病变三分类迁移学习流水线，
+在预处理数据集上实现了训练、验证、测试全流程，并按原图/增强图分别评估。
+\textbf{MobileNetV2} 在测试集取得最佳整体性能（Accuracy 83.33\%，Macro-F1 0.840），
+增强图子集准确率 79.1\%，为所对比方法中最高。
+\textbf{ResNet18} 测试准确率 79.17\%，对增强图泛化弱于 MobileNetV2，mel 召回为 0.69。
+
+与 \texttt{final\_project} 传统流水线对比：最佳传统模型 RF 测试准确率 73.33\%、
+Macro-F1 0.736，增强子集约 71.4\%；MobileNetV2 整体提升约 10 pp、增强子集提升约 8 pp。
+严格病灶分组下传统 Macro-F1 降至约 0.49--0.58，提示需在无泄漏划分下进一步验证深度模型。
+课程要求的双路径——传统方法满足定量基线，深度学习提供更高精度与增强鲁棒性。
+
+已实现类别加权损失、Macro-F1 选模、训练曲线与错例可视化及 \texttt{output.csv} 推理脚本；
+后续可在严格分组测试集上复评深度模型，并尝试手工特征与 CNN 嵌入融合。
+
+%==============================================================================
+\section*{参考文献}
+\addcontentsline{toc}{section}{参考文献}
+\begin{enumerate}
+  \item He K, Zhang X, Ren S, Sun J. Deep Residual Learning for Image Recognition. CVPR, 2016.
+  \item Sandler M, Howard A, Zhu M, et al. MobileNetV2: Inverted Residuals and Linear Bottlenecks. CVPR, 2018.
+  \item 课程 Project 2 说明文档：\texttt{Project idea.pdf}
+  \item 实验代码与结果：\texttt{deep\_learning/}，评估结果 \texttt{deep\_learning/outputs/results/}
+  \item 传统方法流水线：\texttt{final\_project/}，对比数据 \texttt{results/}、\texttt{results\_member4/}
+\end{enumerate}
+
+%==============================================================================
+\appendix
+\section{复现实验命令}
+%==============================================================================
+
+\begin{verbatim}
+cd 大作业目录
+py -m pip install -r deep_learning/requirements.txt
+py -m deep_learning.main --stats
+py -m deep_learning.main --train --eval --plot --backbone all
+py -m deep_learning.main --predict --backbone mobilenet_v2
+py -m deep_learning.main --predict --submitdemo --backbone mobilenet_v2
+\end{verbatim}
+
+输出文件包括：\texttt{model\_comparison.csv}、
+\texttt{*\_history.json}、\texttt{outputs/figures/} 下图、
+\texttt{output\_mobilenet\_v2.csv}，以及各划分的预测结果 CSV。
+关闭类别权重：加 \texttt{--no-class-weights}。
+
+\section{小组成员分工（请填写）}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    姓名 & 学号 & 主要贡献 \\
+    \midrule
+    & & 数据预处理 \\
+    & & 深度学习模型训练与评估 \\
+    & & 实验报告撰写 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\end{document}

@@ -1,0 +1,154 @@
+{
+  "backbone": "resnet18",
+  "checkpoint": "C:\\Users\\ASUS\\Desktop\\生物医学图像处理\\大作业\\deep_learning\\outputs\\checkpoints\\resnet18_best.pt",
+  "splits": {
+    "val": {
+      "overall": {
+        "n_samples": 93,
+        "accuracy": 0.7741935483870968,
+        "macro_f1": 0.7803952011291461,
+        "weighted_f1": 0.7754533658114598,
+        "confusion_matrix": [
+          [
+            17,
+            8,
+            0
+          ],
+          [
+            10,
+            44,
+            2
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "classification_report": "              precision    recall  f1-score   support\n\n         mel       0.63      0.68      0.65        25\n          nv       0.83      0.79      0.81        56\n        vasc       0.85      0.92      0.88        12\n\n    accuracy                           0.77        93\n   macro avg       0.77      0.79      0.78        93\nweighted avg       0.78      0.77      0.78        93\n"
+      },
+      "original_only": {
+        "n_samples": 33,
+        "accuracy": 0.7878787878787878,
+        "macro_f1": 0.792022792022792,
+        "weighted_f1": 0.7915047915047915,
+        "confusion_matrix": [
+          [
+            6,
+            2,
+            0
+          ],
+          [
+            4,
+            16,
+            1
+          ],
+          [
+            0,
+            0,
+            4
+          ]
+        ],
+        "classification_report": "              precision    recall  f1-score   support\n\n         mel       0.60      0.75      0.67         8\n          nv       0.89      0.76      0.82        21\n        vasc       0.80      1.00      0.89         4\n\n    accuracy                           0.79        33\n   macro avg       0.76      0.84      0.79        33\nweighted avg       0.81      0.79      0.79        33\n"
+      },
+      "augmented_only": {
+        "n_samples": 60,
+        "accuracy": 0.7666666666666667,
+        "macro_f1": 0.7740196078431373,
+        "weighted_f1": 0.7666666666666667,
+        "confusion_matrix": [
+          [
+            11,
+            6,
+            0
+          ],
+          [
+            6,
+            28,
+            1
+          ],
+          [
+            0,
+            1,
+            7
+          ]
+        ],
+        "classification_report": "              precision    recall  f1-score   support\n\n         mel       0.65      0.65      0.65        17\n          nv       0.80      0.80      0.80        35\n        vasc       0.88      0.88      0.88         8\n\n    accuracy                           0.77        60\n   macro avg       0.77      0.77      0.77        60\nweighted avg       0.77      0.77      0.77        60\n"
+      }
+    },
+    "test": {
+      "overall": {
+        "n_samples": 120,
+        "accuracy": 0.7916666666666666,
+        "macro_f1": 0.7973822065502881,
+        "weighted_f1": 0.7897980061817074,
+        "confusion_matrix": [
+          [
+            29,
+            12,
+            1
+          ],
+          [
+            7,
+            50,
+            3
+          ],
+          [
+            0,
+            2,
+            16
+          ]
+        ],
+        "classification_report": "              precision    recall  f1-score   support\n\n         mel       0.81      0.69      0.74        42\n          nv       0.78      0.83      0.81        60\n        vasc       0.80      0.89      0.84        18\n\n    accuracy                           0.79       120\n   macro avg       0.80      0.80      0.80       120\nweighted avg       0.79      0.79      0.79       120\n"
+      },
+      "original_only": {
+        "n_samples": 29,
+        "accuracy": 0.896551724137931,
+        "macro_f1": 0.8993939393939394,
+        "weighted_f1": 0.8980564263322882,
+        "confusion_matrix": [
+          [
+            10,
+            2,
+            0
+          ],
+          [
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            5
+          ]
+        ],
+        "classification_report": "              precision    recall  f1-score   support\n\n         mel       1.00      0.83      0.91        12\n          nv       0.79      1.00      0.88        11\n        vasc       1.00      0.83      0.91         6\n\n    accuracy                           0.90        29\n   macro avg       0.93      0.89      0.90        29\nweighted avg       0.92      0.90      0.90        29\n"
+      },
+      "augmented_only": {
+        "n_samples": 91,
+        "accuracy": 0.7582417582417582,
+        "macro_f1": 0.7604216770883437,
+        "weighted_f1": 0.755395398252541,
+        "confusion_matrix": [
+          [
+            19,
+            10,
+            1
+          ],
+          [
+            7,
+            39,
+            3
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "classification_report": "              precision    recall  f1-score   support\n\n         mel       0.73      0.63      0.68        30\n          nv       0.78      0.80      0.79        49\n        vasc       0.73      0.92      0.81        12\n\n    accuracy                           0.76        91\n   macro avg       0.75      0.78      0.76        91\nweighted avg       0.76      0.76      0.76        91\n"
+      }
+    }
+  }
+}

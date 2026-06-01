@@ -1,0 +1,14 @@
+﻿model,row_type,subset,n_samples,n_groups,accuracy,macro_f1,weighted_f1,prediction_consistency,all_correct_rate,any_correct_rate,notes
+DATASET,split_overlap,train_vs_test_base_id,600,200,,,,,,,"train_base=198, test_base=100, overlap_base=98"
+SVM,group_summary,multi_sample_test_groups,38,18,0.725,0.7360446570972886,0.7254784688995215,0.6666666666666666,0.5555555555555556,0.8888888888888888,Consistency is computed only for base ids with >=2 test variants.
+SVM,suffix_summary,original,29,29,0.896551724137931,0.8960863697705803,0.8923635348317743,,,,Performance by image augmentation suffix in the test set.
+SVM,suffix_summary,_aug1,45,45,0.6444444444444445,0.6561264822134387,0.6531400966183575,,,,Performance by image augmentation suffix in the test set.
+SVM,suffix_summary,_aug2,46,46,0.6956521739130435,0.6898897490030494,0.6923783006455956,,,,Performance by image augmentation suffix in the test set.
+Random Forest,group_summary,multi_sample_test_groups,38,18,0.7333333333333333,0.73595849427335,0.7329753155695506,0.5,0.3888888888888889,0.8888888888888888,Consistency is computed only for base ids with >=2 test variants.
+Random Forest,suffix_summary,original,29,29,0.7931034482758621,0.8257575757575758,0.7931034482758621,,,,Performance by image augmentation suffix in the test set.
+Random Forest,suffix_summary,_aug1,45,45,0.7333333333333333,0.6977433913604126,0.7317945411562434,,,,Performance by image augmentation suffix in the test set.
+Random Forest,suffix_summary,_aug2,46,46,0.6956521739130435,0.6791452991452992,0.6908361204013377,,,,Performance by image augmentation suffix in the test set.
+KNN,group_summary,multi_sample_test_groups,38,18,0.6666666666666666,0.6721107970266673,0.6698030241845021,0.5,0.3888888888888889,0.8333333333333334,Consistency is computed only for base ids with >=2 test variants.
+KNN,suffix_summary,original,29,29,0.7586206896551724,0.7832772166105499,0.760118425635667,,,,Performance by image augmentation suffix in the test set.
+KNN,suffix_summary,_aug1,45,45,0.6444444444444445,0.6279624893435636,0.6494799658994033,,,,Performance by image augmentation suffix in the test set.
+KNN,suffix_summary,_aug2,46,46,0.6304347826086957,0.6132823269920045,0.6293559175747114,,,,Performance by image augmentation suffix in the test set.

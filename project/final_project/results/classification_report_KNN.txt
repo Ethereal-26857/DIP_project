@@ -1,0 +1,12 @@
+Model: KNN
+Best Params: {'algorithm': 'auto', 'leaf_size': 30, 'metric': 'manhattan', 'metric_params': None, 'n_jobs': None, 'n_neighbors': 1, 'p': 2, 'weights': 'distance'}
+--------------------------------------------------
+              precision    recall  f1-score   support
+
+         mel     0.5600    0.6667    0.6087        42
+          nv     0.7407    0.6667    0.7018        60
+        vasc     0.7500    0.6667    0.7059        18
+
+    accuracy                         0.6667       120
+   macro avg     0.6836    0.6667    0.6721       120
+weighted avg     0.6789    0.6667    0.6698       120
