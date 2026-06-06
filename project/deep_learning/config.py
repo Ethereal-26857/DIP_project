@@ -5,7 +5,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 # 加工后的数据集
-PROCESSED_DIR = PROJECT_ROOT / "processed dataset"
+PROCESSED_DIR = PROJECT_ROOT / "final_project"
 TRAIN_IMAGE_DIR = PROCESSED_DIR / "train"
 TEST_IMAGE_DIR = PROCESSED_DIR / "test"
 TRAIN_LABEL_CSV = PROCESSED_DIR / "train_label.csv"

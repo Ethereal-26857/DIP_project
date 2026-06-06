@@ -1,0 +1,67 @@
+\contentsline {section}{\numberline {1}引言}{4}{section.1}%
+\contentsline {subsection}{\numberline {1.1}研究背景与意义}{4}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}项目任务描述}{4}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}报告结构}{4}{subsection.1.3}%
+\contentsline {section}{\numberline {2}数据集与预处理}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}数据概览}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}预处理流程}{5}{subsection.2.2}%
+\contentsline {paragraph}{图像去噪}{5}{paragraph*.3}%
+\contentsline {paragraph}{毛发去除}{5}{paragraph*.4}%
+\contentsline {paragraph}{尺寸归一化}{5}{paragraph*.5}%
+\contentsline {paragraph}{亮度归一化}{6}{paragraph*.6}%
+\contentsline {paragraph}{数据集划分}{6}{paragraph*.7}%
+\contentsline {section}{\numberline {3}特征工程}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}颜色特征}{6}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}颜色矩（Color Moments）}{6}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}颜色直方图（Color Histogram）}{6}{subsubsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.2}纹理特征}{7}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}灰度共生矩阵（GLCM）}{7}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}局部二值模式（LBP）}{7}{subsubsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.3}特征向量组成}{8}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}特征预处理与降维}{8}{subsection.3.4}%
+\contentsline {paragraph}{标准化（Standardization）}{8}{paragraph*.10}%
+\contentsline {paragraph}{PCA降维}{8}{paragraph*.11}%
+\contentsline {paragraph}{特征有效性分析}{8}{paragraph*.12}%
+\contentsline {section}{\numberline {4}传统机器学习方法}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}支持向量机（SVM）}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}随机森林（Random Forest）}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}K近邻（KNN）}{10}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}超参数优化}{10}{subsection.4.4}%
+\contentsline {section}{\numberline {5}深度学习方法}{11}{section.5}%
+\contentsline {subsection}{\numberline {5.1}迁移学习策略}{11}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}骨干网络}{12}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}ResNet-18}{12}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}MobileNetV2}{12}{subsubsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.3}训练配置}{12}{subsection.5.3}%
+\contentsline {section}{\numberline {6}实验结果}{13}{section.6}%
+\contentsline {subsection}{\numberline {6.1}传统机器学习模型结果}{13}{subsection.6.1}%
+\contentsline {subsubsection}{\numberline {6.1.1}模型性能对比}{13}{subsubsection.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.2}各类别详细指标}{14}{subsubsection.6.1.2}%
+\contentsline {subsubsection}{\numberline {6.1.3}混淆矩阵分析}{14}{subsubsection.6.1.3}%
+\contentsline {subsubsection}{\numberline {6.1.4}模型性能可视化对比}{15}{subsubsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.2}特征分析与消融实验}{15}{subsection.6.2}%
+\contentsline {subsubsection}{\numberline {6.2.1}互信息特征重要性}{15}{subsubsection.6.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.2}t-SNE特征可视化}{16}{subsubsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.3}特征组消融实验}{17}{subsubsection.6.2.3}%
+\contentsline {subsection}{\numberline {6.3}深度学习模型结果}{17}{subsection.6.3}%
+\contentsline {subsubsection}{\numberline {6.3.1}深度学习各类别详细指标}{19}{subsubsection.6.3.1}%
+\contentsline {subsubsection}{\numberline {6.3.2}深度学习混淆矩阵}{20}{subsubsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.4}ROC曲线}{20}{subsection.6.4}%
+\contentsline {section}{\numberline {7}鲁棒性分析}{21}{section.7}%
+\contentsline {subsection}{\numberline {7.1}增强图像预测一致性}{21}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}图像扰动鲁棒性测试}{22}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}严格分组划分的稳定性分析}{24}{subsection.7.3}%
+\contentsline {subsubsection}{\numberline {7.3.1}原划分的风险}{24}{subsubsection.7.3.1}%
+\contentsline {subsubsection}{\numberline {7.3.2}严格分组划分实验}{24}{subsubsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.4}最差情况分析}{25}{subsection.7.4}%
+\contentsline {section}{\numberline {8}讨论}{26}{section.8}%
+\contentsline {subsection}{\numberline {8.1}传统方法 vs 深度学习方法}{26}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}临床视角分析}{27}{subsection.8.2}%
+\contentsline {subsubsection}{\numberline {8.2.1}假阴性的代价}{27}{subsubsection.8.2.1}%
+\contentsline {subsubsection}{\numberline {8.2.2}模型校准与置信度}{27}{subsubsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.3}局限性与改进方向}{27}{subsection.8.3}%
+\contentsline {section}{\numberline {9}结论}{28}{section.9}%
+\contentsline {section}{团队分工说明}{30}{section*.40}%
+\contentsline {section}{\numberline {A}项目代码结构}{31}{appendix.A}%
+\contentsline {section}{\numberline {B}实验环境}{32}{appendix.B}%
+\contentsline {section}{\numberline {C}LaTeX 编译说明}{32}{appendix.C}%

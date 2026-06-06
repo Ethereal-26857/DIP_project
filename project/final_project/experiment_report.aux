@@ -1,0 +1,157 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}引言}{4}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}研究背景与意义}{4}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}项目任务描述}{4}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}报告结构}{4}{subsection.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}数据集与预处理}{5}{section.2}\protected@file@percent }
+\newlabel{sec:data}{{2}{5}{数据集与预处理}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}数据概览}{5}{subsection.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2.1}{\ignorespaces 数据集类别分布}}{5}{table.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:data_dist}{{2.1}{5}{数据集类别分布}{table.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}预处理流程}{5}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{图像去噪}{5}{paragraph*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{毛发去除}{5}{paragraph*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{尺寸归一化}{5}{paragraph*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{亮度归一化}{6}{paragraph*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{数据集划分}{6}{paragraph*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}特征工程}{6}{section.3}\protected@file@percent }
+\newlabel{sec:feature}{{3}{6}{特征工程}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}颜色特征}{6}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}颜色矩（Color Moments）}{6}{subsubsection.3.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}颜色直方图（Color Histogram）}{6}{subsubsection.3.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}纹理特征}{7}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}灰度共生矩阵（GLCM）}{7}{subsubsection.3.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces GLCM特征属性及其计算}}{7}{table.caption.8}\protected@file@percent }
+\newlabel{tab:glcm_props}{{3.1}{7}{GLCM特征属性及其计算}{table.caption.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}局部二值模式（LBP）}{7}{subsubsection.3.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}特征向量组成}{8}{subsection.3.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces 127维特征向量构成}}{8}{table.caption.9}\protected@file@percent }
+\newlabel{tab:feature_comp}{{3.2}{8}{127维特征向量构成}{table.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}特征预处理与降维}{8}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{标准化（Standardization）}{8}{paragraph*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{PCA降维}{8}{paragraph*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{特征有效性分析}{8}{paragraph*.12}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces PCA累积解释方差及前20个主成分方差贡献}}{9}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:pca}{{3.1}{9}{PCA累积解释方差及前20个主成分方差贡献}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}传统机器学习方法}{9}{section.4}\protected@file@percent }
+\newlabel{sec:ml}{{4}{9}{传统机器学习方法}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}支持向量机（SVM）}{9}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}随机森林（Random Forest）}{9}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}K近邻（KNN）}{10}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}超参数优化}{10}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces 各分类器超参数搜索空间}}{11}{table.caption.14}\protected@file@percent }
+\newlabel{tab:param_grid}{{4.1}{11}{各分类器超参数搜索空间}{table.caption.14}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}深度学习方法}{11}{section.5}\protected@file@percent }
+\newlabel{sec:dl}{{5}{11}{深度学习方法}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}迁移学习策略}{11}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}骨干网络}{12}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}ResNet-18}{12}{subsubsection.5.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}MobileNetV2}{12}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}训练配置}{12}{subsection.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces 深度学习模型训练配置}}{13}{table.caption.15}\protected@file@percent }
+\newlabel{tab:dl_config}{{5.1}{13}{深度学习模型训练配置}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}实验结果}{13}{section.6}\protected@file@percent }
+\newlabel{sec:results}{{6}{13}{实验结果}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}传统机器学习模型结果}{13}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.1}模型性能对比}{13}{subsubsection.6.1.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.1}{\ignorespaces 传统机器学习模型性能汇总}}{13}{table.caption.16}\protected@file@percent }
+\newlabel{tab:ml_results}{{6.1}{13}{传统机器学习模型性能汇总}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.2}各类别详细指标}{14}{subsubsection.6.1.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.2}{\ignorespaces 随机森林各类别详细分类指标}}{14}{table.caption.17}\protected@file@percent }
+\newlabel{tab:per_class_rf}{{6.2}{14}{随机森林各类别详细分类指标}{table.caption.17}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.3}混淆矩阵分析}{14}{subsubsection.6.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.1}{\ignorespaces 三种传统机器学习模型的混淆矩阵对比}}{15}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:cm_all}{{6.1}{15}{三种传统机器学习模型的混淆矩阵对比}{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.1.4}模型性能可视化对比}{15}{subsubsection.6.1.4}\protected@file@percent }
+\newlabel{fig:metrics_comp}{{6.2a}{15}{整体性能指标对比}{figure.caption.19}{}}
+\newlabel{sub@fig:metrics_comp}{{a}{15}{整体性能指标对比}{figure.caption.19}{}}
+\newlabel{fig:per_class_f1}{{6.2b}{15}{各类别F1-score对比}{figure.caption.19}{}}
+\newlabel{sub@fig:per_class_f1}{{b}{15}{各类别F1-score对比}{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6.2}{\ignorespaces 传统机器学习模型性能可视化}}{15}{figure.caption.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}特征分析与消融实验}{15}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}互信息特征重要性}{15}{subsubsection.6.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.3}{\ignorespaces 互信息评分Top-30特征}}{16}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:mi}{{6.3}{16}{互信息评分Top-30特征}{figure.caption.20}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}t-SNE特征可视化}{16}{subsubsection.6.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.4}{\ignorespaces t-SNE特征空间可视化（圆=训练集，方=测试集）}}{16}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:tsne}{{6.4}{16}{t-SNE特征空间可视化（圆=训练集，方=测试集）}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.3}特征组消融实验}{17}{subsubsection.6.2.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.3}{\ignorespaces 特征组消融实验结果（随机森林，测试集）}}{17}{table.caption.22}\protected@file@percent }
+\newlabel{tab:ablation}{{6.3}{17}{特征组消融实验结果（随机森林，测试集）}{table.caption.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}深度学习模型结果}{17}{subsection.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.4}{\ignorespaces ResNet18与MobileNetV2分类性能对比（验证集+测试集）}}{18}{table.caption.23}\protected@file@percent }
+\newlabel{tab:dl_main}{{6.4}{18}{ResNet18与MobileNetV2分类性能对比（验证集+测试集）}{table.caption.23}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6.5}{\ignorespaces 深度学习模型：测试集原图 vs 增强图准确率差距}}{18}{table.caption.24}\protected@file@percent }
+\newlabel{tab:dl_gap}{{6.5}{18}{深度学习模型：测试集原图 vs 增强图准确率差距}{table.caption.24}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.1}深度学习各类别详细指标}{19}{subsubsection.6.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.6}{\ignorespaces MobileNetV2测试集各类别分类报告（$n=120$）}}{19}{table.caption.25}\protected@file@percent }
+\newlabel{tab:dl_perclass}{{6.6}{19}{MobileNetV2测试集各类别分类报告（$n=120$）}{table.caption.25}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6.7}{\ignorespaces ResNet18测试集各类别分类报告（$n=120$）}}{19}{table.caption.26}\protected@file@percent }
+\newlabel{tab:dl_perclass_rn}{{6.7}{19}{ResNet18测试集各类别分类报告（$n=120$）}{table.caption.26}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.2}深度学习混淆矩阵}{20}{subsubsection.6.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.8}{\ignorespaces 深度学习模型测试集整体混淆矩阵（$n=120$，行=真实，列=预测）}}{20}{table.caption.27}\protected@file@percent }
+\newlabel{tab:cm_dl}{{6.8}{20}{深度学习模型测试集整体混淆矩阵（$n=120$，行=真实，列=预测）}{table.caption.27}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6.9}{\ignorespaces 深度学习模型增强图子集混淆矩阵（$n=91$）}}{20}{table.caption.28}\protected@file@percent }
+\newlabel{tab:cm_dl_aug}{{6.9}{20}{深度学习模型增强图子集混淆矩阵（$n=91$）}{table.caption.28}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}ROC曲线}{20}{subsection.6.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.5}{\ignorespaces 三种模型的OvR ROC曲线}}{21}{figure.caption.29}\protected@file@percent }
+\newlabel{fig:roc}{{6.5}{21}{三种模型的OvR ROC曲线}{figure.caption.29}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}鲁棒性分析}{21}{section.7}\protected@file@percent }
+\newlabel{sec:robustness}{{7}{21}{鲁棒性分析}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}增强图像预测一致性}{21}{subsection.7.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7.1}{\ignorespaces 增强图像预测一致性分析（18个多样本测试组，共38张图像）}}{21}{table.caption.30}\protected@file@percent }
+\newlabel{tab:aug_consistency}{{7.1}{21}{增强图像预测一致性分析（18个多样本测试组，共38张图像）}{table.caption.30}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7.2}{\ignorespaces 按增强后缀分组的测试集准确率（原图$n=29$，\_aug1 $n=45$，\_aug2 $n=46$）}}{22}{table.caption.31}\protected@file@percent }
+\newlabel{tab:aug_suffix}{{7.2}{22}{按增强后缀分组的测试集准确率（原图$n=29$，\_aug1 $n=45$，\_aug2 $n=46$）}{table.caption.31}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}图像扰动鲁棒性测试}{22}{subsection.7.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7.1}{\ignorespaces 不同扰动条件下Macro-F1的变化曲线}}{23}{figure.caption.32}\protected@file@percent }
+\newlabel{fig:robust_curves}{{7.1}{23}{不同扰动条件下Macro-F1的变化曲线}{figure.caption.32}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7.2}{\ignorespaces 相对干净基线的Macro-F1保持率热力图}}{23}{figure.caption.33}\protected@file@percent }
+\newlabel{fig:stability_heatmap}{{7.2}{23}{相对干净基线的Macro-F1保持率热力图}{figure.caption.33}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7.3}{\ignorespaces 各类别在最差扰动强度下的平均F1下降}}{24}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:f1_drop}{{7.3}{24}{各类别在最差扰动强度下的平均F1下降}{figure.caption.34}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}严格分组划分的稳定性分析}{24}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.3.1}原划分的风险}{24}{subsubsection.7.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.3.2}严格分组划分实验}{24}{subsubsection.7.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7.3}{\ignorespaces 严格分组划分下的模型性能（10次重复，均值$\pm $标准差）}}{24}{table.caption.35}\protected@file@percent }
+\newlabel{tab:group_split}{{7.3}{24}{严格分组划分下的模型性能（10次重复，均值$\pm $标准差）}{table.caption.35}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7.4}{\ignorespaces 原划分与严格分组划分的Macro-F1对比}}{25}{figure.caption.36}\protected@file@percent }
+\newlabel{fig:group_split_stab}{{7.4}{25}{原划分与严格分组划分的Macro-F1对比}{figure.caption.36}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}最差情况分析}{25}{subsection.7.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7.5}{\ignorespaces 最差扰动条件下的混淆矩阵}}{26}{figure.caption.37}\protected@file@percent }
+\newlabel{fig:worst_cm}{{7.5}{26}{最差扰动条件下的混淆矩阵}{figure.caption.37}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}讨论}{26}{section.8}\protected@file@percent }
+\newlabel{sec:discussion}{{8}{26}{讨论}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}传统方法 vs 深度学习方法}{26}{subsection.8.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.1}{\ignorespaces 传统方法与深度学习方法范式对比}}{26}{table.caption.38}\protected@file@percent }
+\newlabel{tab:paradigm}{{8.1}{26}{传统方法与深度学习方法范式对比}{table.caption.38}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}临床视角分析}{27}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.1}假阴性的代价}{27}{subsubsection.8.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.2.2}模型校准与置信度}{27}{subsubsection.8.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}局限性与改进方向}{27}{subsection.8.3}\protected@file@percent }
+\bibcite{isic}{1}
+\@writefile{toc}{\contentsline {section}{\numberline {9}结论}{28}{section.9}\protected@file@percent }
+\newlabel{sec:conclusion}{{9}{28}{结论}{section.9}{}}
+\bibcite{esteva}{2}
+\bibcite{haralick}{3}
+\bibcite{ojala}{4}
+\bibcite{he2016}{5}
+\bibcite{sandler}{6}
+\bibcite{strickland}{7}
+\bibcite{lecun}{8}
+\bibcite{breiman}{9}
+\bibcite{cortes}{10}
+\bibcite{pca}{11}
+\bibcite{maaten}{12}
+\bibcite{isic_challenge}{13}
+\@writefile{toc}{\contentsline {section}{团队分工说明}{30}{section*.40}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9.1}{\ignorespaces 小组成员分工明细}}{30}{table.caption.41}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}项目代码结构}{31}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}实验环境}{32}{appendix.B}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {B.1}{\ignorespaces 实验软件环境}}{32}{table.caption.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C}LaTeX 编译说明}{32}{appendix.C}\protected@file@percent }
+\gdef \@abspage@last{32}

@@ -24,7 +24,8 @@
       "Bash(python3 *)",
       "Bash(python *)",
       "Bash(jupyter kernelspec *)",
-      "Bash(D:/coding/DIP_project/.venv/Scripts/pip.exe install *)"
+      "Bash(D:/coding/DIP_project/.venv/Scripts/pip.exe install *)",
+      "mcp__ide__executeCode"
     ]
   }
 }
